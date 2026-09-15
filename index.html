@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lexi — AI Voice Vocabulary Coach</title>
+  <meta name="description" content="Master advanced vocabulary and pronunciation with Lexi, an interactive AI voice agent designed to elevate your articulation and language fluency.">
+  
+  <!-- Google Fonts: Outfit & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Navigation & HUD Header -->
+  <header class="app-header">
+    <div class="brand-container">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9v-2h2v2zm0-4H9V7h2v5z"/>
+          <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" fill="white"/>
+        </svg>
+      </div>
+      <div class="brand-title">
+        Lexi <span class="brand-tag">Voice AI</span>
+      </div>
+    </div>
+
+    <!-- HUD Stats Bar -->
+    <div class="hud-stats">
+      <div class="stat-pill streak" title="Current Daily Streak">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.61 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z"/>
+        </svg>
+        <span>Streak: <span class="highlight" id="hudStreak">1 Day</span></span>
+      </div>
+
+      <div class="stat-pill mastered" title="Words Practiced & Mastered">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>
+        <span>Mastered: <span class="highlight" id="hudMastered">0</span></span>
+      </div>
+
+      <div class="stat-pill accuracy" title="Quiz Accuracy Rate">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+        </svg>
+        <span>Accuracy: <span class="highlight" id="hudAccuracy">100%</span></span>
+      </div>
+
+      <div class="stat-pill engine" id="engineBadge" title="AI Intelligence Engine">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        <span id="engineBadgeText">📖 Live Dictionary</span>
+      </div>
+
+      <button id="settingsToggleBtn" class="settings-btn" title="Voice & Agent Settings">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+          <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Application Container -->
+  <main class="app-main">
+
+    <!-- Mode Selector & Deck Filter Bar -->
+    <nav class="mode-bar" aria-label="Learning Modes">
+      <div class="mode-tabs">
+        <button class="mode-tab active" data-mode="learn">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/>
+          </svg>
+          Learn & Pronounce
+        </button>
+        <button class="mode-tab" data-mode="quiz">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/>
+          </svg>
+          Word Quiz
+        </button>
+        <button class="mode-tab" data-mode="sentence">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
+          </svg>
+          Sentence Builder
+        </button>
+        <button class="mode-tab" data-mode="free">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+          </svg>
+          Free Talk & Ask
+        </button>
+      </div>
+
+      <div class="deck-selector">
+        <label for="categoryFilter">Deck:</label>
+        <select id="categoryFilter" class="category-select">
+          <option value="all">All Vocabulary</option>
+          <option value="Executive & Impact">Executive & Impact</option>
+          <option value="Emotional & Nuance">Emotional & Nuance</option>
+          <option value="Everyday Power">Everyday Power</option>
+        </select>
+      </div>
+    </nav>
+
+    <!-- Studio Grid: Left (Voice Orb & Card), Right (Interactive Coach Stream) -->
+    <div class="studio-grid">
+
+      <!-- Left Column -->
+      <section class="stage-column">
+        
+        <!-- Glowing Voice Orb Stage -->
+        <div class="orb-stage-card" id="orbStageCard">
+          
+          <div class="agent-status-badge idle" id="agentStatusBadge">
+            <span class="status-dot"></span>
+            <span id="agentStatusText">Lexi is Ready</span>
+          </div>
+
+          <div class="orb-canvas-wrapper">
+            <canvas id="voiceOrbCanvas" width="280" height="280"></canvas>
+          </div>
+
+          <!-- Controls Dock -->
+          <div class="voice-controls-dock">
+            <button class="mic-primary-btn" id="micBtn" title="Hold or Click to Speak with Lexi">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/>
+              </svg>
+            </button>
+
+            <div class="mic-hint" id="micHintText">
+              <span>Tap microphone or spacebar to speak</span>
+            </div>
+
+            <!-- Contextual Quick Action Chips -->
+            <div class="quick-chips-wrapper">
+              <span class="quick-chips-label">Quick Voice Prompts</span>
+              <div class="chips-row" id="quickChipsContainer">
+                <button class="chip-btn" data-action="pronounce">🔊 "Pronounce this word"</button>
+                <button class="chip-btn" data-action="example">📖 "Give me an example"</button>
+                <button class="chip-btn" data-action="repeat">🔄 "Say that again"</button>
+                <button class="chip-btn" data-action="quiz_me">⚡ "Quiz me now!"</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Explore Any Word Interactive Search Bar -->
+        <div class="explore-word-box">
+          <form id="exploreWordForm" class="explore-input-wrapper">
+            <svg class="explore-search-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+            </svg>
+            <input 
+              type="text" 
+              id="exploreWordInput" 
+              class="explore-input" 
+              placeholder="Ask or explore any word in the world (e.g. serendipity, zeitgeist, defenestration)..."
+              autocomplete="off"
+            />
+            <button type="submit" id="exploreWordBtn" class="explore-submit-btn" title="Explore Word with AI">
+              <span id="exploreBtnText">Explore</span>
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
+                <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+              </svg>
+            </button>
+          </form>
+        </div>
+
+        <!-- Active Vocabulary Word Card -->
+        <article class="vocab-card" id="activeVocabCard">
+          <div class="vocab-card-header">
+            <div class="word-meta">
+              <div class="word-row">
+                <h1 class="active-word" id="vocabWord">ameliorate</h1>
+                <span class="active-pos" id="vocabPos">verb</span>
+              </div>
+              <span class="active-phonetic" id="vocabPhonetic">/əˈmiːli.ə.reɪt/</span>
+            </div>
+
+            <div class="card-actions">
+              <button class="icon-action-btn" id="speakWordBtn" title="Listen to Lexi pronounce this word">
+                <svg viewBox="0 0 24 24">
+                  <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                </svg>
+              </button>
+              <button class="icon-action-btn" id="bookmarkBtn" title="Mark as Mastered">
+                <svg viewBox="0 0 24 24" id="bookmarkIcon">
+                  <path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2zm0 15l-5-2.18L7 18V5h10v13z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <p class="vocab-definition" id="vocabDefinition">
+            To make something bad, unsatisfactory, or unpleasant better and more bearable.
+          </p>
+
+          <div class="vocab-example-box" id="vocabExample">
+            "The new transit policy aims to <em>ameliorate</em> severe traffic congestion during peak hours."
+          </div>
+
+          <div class="synonyms-row" id="synonymsWrapper">
+            <span class="synonyms-label">Synonyms:</span>
+            <span class="syn-pill">improve</span>
+            <span class="syn-pill">enhance</span>
+            <span class="syn-pill">alleviate</span>
+            <span class="syn-pill">mitigate</span>
+          </div>
+
+          <div class="mnemonic-box" id="mnemonicBox">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 12.16 7 10.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"/>
+            </svg>
+            <span id="mnemonicText">Memory Hook: Think of 'Amelia rated' high because she made everything better.</span>
+          </div>
+
+          <!-- Card Nav Controls -->
+          <div class="card-nav-footer">
+            <button class="nav-btn" id="prevWordBtn">
+              ← Previous Word
+            </button>
+            <button class="nav-btn primary" id="nextWordBtn">
+              Next Word →
+            </button>
+          </div>
+        </article>
+
+      </section>
+
+      <!-- Right Column: Interactive Chat & Transcript -->
+      <section class="chat-column">
+        <div class="chat-header">
+          <div class="coach-profile">
+            <div class="coach-avatar">L</div>
+            <div class="coach-info">
+              <h4>Lexi, Your Vocabulary Coach</h4>
+              <p>Adaptive Voice Agent • Ready</p>
+            </div>
+          </div>
+          <button class="clear-chat-btn" id="clearChatBtn" title="Clear conversation transcript">Clear History</button>
+        </div>
+
+        <!-- Scrollable Conversation Stream -->
+        <div class="chat-stream" id="chatStream">
+          <!-- Initial Welcome Message from Lexi -->
+          <div class="message-group agent">
+            <div class="message-bubble">
+              Hello! I'm <strong>Lexi</strong>, your voice vocabulary coach. I'm here to help you articulate, pronounce, and confidently command high-impact words. 
+              <br><br>
+              You can tap the microphone below, select any prompt chip, or try asking me to quiz you on a word!
+            </div>
+            <div class="message-meta">
+              <span>Lexi • Just now</span>
+              <button class="repeat-speech-btn" data-text="Hello! I'm Lexi, your voice vocabulary coach. I'm here to help you articulate, pronounce, and confidently command high-impact words. You can tap the microphone below, select any prompt chip, or try asking me to quiz you on a word!" title="Listen again">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live STT Preview Bar while speaking -->
+        <div class="live-speech-preview" id="liveSpeechPreview">
+          <div class="audio-pulse-bars">
+            <span class="audio-bar"></span>
+            <span class="audio-bar"></span>
+            <span class="audio-bar"></span>
+            <span class="audio-bar"></span>
+          </div>
+          <span id="liveTranscriptText">Listening to your voice...</span>
+        </div>
+
+        <!-- Text Input & Send (Accessible Fallback) -->
+        <form class="chat-input-container" id="chatInputForm">
+          <input 
+            type="text" 
+            id="textInput" 
+            class="text-input-field" 
+            placeholder="Type your answer, sentence, or ask Lexi anything..."
+            autocomplete="off"
+          />
+          <button type="submit" class="send-btn" id="sendBtn" title="Send message to Lexi">
+            <svg viewBox="0 0 24 24">
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+            </svg>
+          </button>
+        </form>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Settings Modal Dialog -->
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Lexi Voice & Learning Settings</h3>
+        <button class="close-modal-btn" id="closeSettingsBtn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="setting-group">
+          <label for="voiceSelect">Coach Voice Model</label>
+          <select id="voiceSelect"></select>
+        </div>
+        <div class="setting-group">
+          <label for="speechRateSlider">Voice Speed: <span id="rateVal">1.0x</span></label>
+          <input type="range" id="speechRateSlider" min="0.7" max="1.3" step="0.05" value="1.0">
+        </div>
+        <div class="setting-group">
+          <label for="autoListenToggle">
+            <input type="checkbox" id="autoListenToggle" checked style="margin-right: 8px;">
+            Auto-listen for user response after Lexi finishes speaking
+          </label>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid var(--border-subtle); margin: 0.8rem 0;">
+
+        <h4 style="font-size: 0.95rem; color: #FFFFFF; display: flex; align-items: center; gap: 0.45rem;">
+          <span style="color: var(--accent-cyan)">⚡</span> Cloud LLM & AI Intelligence
+        </h4>
+        <p style="font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 0.4rem;">
+          Connect to Google Gemini, Groq, or OpenAI to unlock infinite dynamic vocabulary, deep context, and AI sentence evaluation.
+        </p>
+
+        <div class="setting-group">
+          <label for="llmProviderSelect">AI Intelligence Provider</label>
+          <select id="llmProviderSelect">
+            <option value="gemini">Google Gemini (Recommended - Free Tier)</option>
+            <option value="groq">Groq (Ultra-Fast Llama-3)</option>
+            <option value="openai">OpenAI (GPT-4o Mini)</option>
+            <option value="dictionary_only">Free Dictionary API Only (No Key Needed)</option>
+          </select>
+        </div>
+
+        <div class="setting-group" id="apiKeyGroup">
+          <label for="llmApiKey">API Key</label>
+          <input type="password" id="llmApiKey" placeholder="Enter your API key (e.g. AIzaSy...)" autocomplete="off">
+          <span style="font-size: 0.72rem; color: var(--text-muted);">Stored securely in your local browser only. Never shared.</span>
+        </div>
+
+        <div class="setting-group" id="modelNameGroup">
+          <label for="llmModelInput">Model Name</label>
+          <input type="text" id="llmModelInput" value="gemini-1.5-flash" placeholder="e.g. gemini-1.5-flash, llama-3.3-70b-versatile, gpt-4o-mini">
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; align-items: center; margin-top: 0.4rem;">
+          <button type="button" id="saveLLMConfigBtn" class="nav-btn primary" style="flex: 1; justify-content: center;">
+            Save & Test AI Engine
+          </button>
+        </div>
+        <div id="llmTestStatus" style="font-size: 0.8rem; margin-top: 0.3rem;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="vocab-data.js"></script>
+  <script src="llm-service.js"></script>
+  <script src="visualizer.js"></script>
+  <script src="speech-engine.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
